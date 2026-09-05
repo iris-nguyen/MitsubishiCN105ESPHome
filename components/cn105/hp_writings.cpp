@@ -581,15 +581,18 @@ void CN105Climate::sendWantedRunStates() {
     //}
     packet[5] = 0x08;
     if (this->wantedRunStates.airflow_control != nullptr) {
-        ESP_LOGD(TAG, "Kirigamine airflow control -> %s", getAirflowControlSetting());
-        packet[6] |= 0x08;  // Kích hoạt cờ MoveEye / i-See cho máy nội địa Kirigamine
+        ESP_LOGD(TAG, "Kirigamine airflow control -> %s", this->wantedRunStates.airflow_control);
+        packet[6] |= 0x08; // Kích hoạt cờ MoveEye / i-See cho máy nội địa Kirigamine
 
-        if (strcmp(getAirflowControlSetting(), "DIRECT") == 0) {
+        if (strcasecmp(this->wantedRunStates.airflow_control, "DIRECT") == 0) {
             packet[10] = 0x01;
-        } else if (strcmp(getAirflowControlSetting(), "INDIRECT") == 0) {
+            this->currentRunStates.airflow_control = "DIRECT";
+        } else if (strcasecmp(this->wantedRunStates.airflow_control, "INDIRECT") == 0) {
             packet[10] = 0x02;
+            this->currentRunStates.airflow_control = "INDIRECT";
         } else {
             packet[10] = 0x00;
+            this->currentRunStates.airflow_control = "EVEN";
         }
     }
     if (this->wantedRunStates.air_purifier > -1) {
