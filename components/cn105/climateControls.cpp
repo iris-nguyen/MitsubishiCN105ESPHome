@@ -726,15 +726,18 @@ void CN105Climate::setWideVaneSetting(const char* setting) {
 }
 
 void CN105Climate::setAirflowControlSetting(const char* setting) {
-    int index = lookupByteMapIndex(AIRFLOW_CONTROL_MAP, 3, setting);
-    if (index > -1) {
-        wantedRunStates.airflow_control = AIRFLOW_CONTROL_MAP[index];
+    ESP_LOGI(TAG, "Airflow control requested from HA: %s", setting);
+
+    if (strcasecmp(setting, "DIRECT") == 0) {
+        wantedRunStates.airflow_control = "DIRECT";
+    } else if (strcasecmp(setting, "INDIRECT") == 0) {
+        wantedRunStates.airflow_control = "INDIRECT";
     } else {
-        wantedRunStates.airflow_control = AIRFLOW_CONTROL_MAP[0];
+        wantedRunStates.airflow_control = "EVEN";
     }
+
     this->wantedRunStates.hasChanged = true;
-    this->wantedRunStates.lastChange = CUSTOM_MILLIS;
-    this->wantedRunStates.hasBeenSent = false;
+    this->lastSend = 0;
     this->sendWantedRunStates();
 }
 
