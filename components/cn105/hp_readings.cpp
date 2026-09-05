@@ -234,6 +234,10 @@ void CN105Climate::getSettingsFromResponsePacket() {
     if (this->iSee_sensor_ != nullptr) {
         this->iSee_sensor_->publish_state(receivedSettings.iSee);
     }
+    // Cập nhật trạng thái Airflow Control từ bộ nhớ hiện tại, tránh bị reset về Swing
+    if (this->airflow_control_select_ != nullptr && this->currentRunStates.airflow_control != nullptr) {
+        this->airflow_control_select_->publish_state(this->currentRunStates.airflow_control);
+    }
 
     // --- TARGET HUMIDITY (byte 12 of 0x02 settings packet) ---
     // Some premium models (e.g. MSZ-LN series) store a target humidity
