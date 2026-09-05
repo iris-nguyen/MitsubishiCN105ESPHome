@@ -732,6 +732,10 @@ void CN105Climate::setAirflowControlSetting(const char* setting) {
     } else {
         wantedRunStates.airflow_control = AIRFLOW_CONTROL_MAP[0];
     }
+    this->wantedRunStates.hasChanged = true;
+    this->wantedRunStates.lastChange = CUSTOM_MILLIS;
+    this->wantedRunStates.hasBeenSent = false;
+    this->sendWantedRunStates();
 }
 
 void CN105Climate::set_remote_temperature(float setting) {
